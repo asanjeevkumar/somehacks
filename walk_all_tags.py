@@ -2,17 +2,15 @@ import copy
 import json
 import time
 import requests
-from urllib import parse
+from urlparse import urljoin
 
 REQUEST_URL = 'http://35.177.113.43:80/'
 ADD_SCORE_END_POINT = '/services.php?action=capturescore_new'
 CHECK_BONUS_END_POINT = '/services.php?action=checkforbonuspoints_5hours'
 API_KEY = "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R"
-TEAM_ID = "563"
-PLAYER_ID = "c2FuamVldmVrdW1hcmdtYWlsY29t"
-# TEAM_ID = "504"  # SUSHMA
-# PLAYER_ID = "c3VzaG1hc2FuamVldg\u003d\u003d"  # SUSHMA
-PLAYER_LIST = [("563", "c2FuamVldmVrdW1hcmdtYWlsY29t"), ("504", "c3VzaG1hc2FuamVldg\u003d\u003d")]
+
+PLAYER_LIST = [("563", "c2FuamVldmVrdW1hcmdtYWlsY29t")]
+# PLAYER_LIST.append(("504", "c3VzaG1hc2FuamVldg\u003d\u003d"))
 
 
 def main(team_id, player_id):
@@ -23,11 +21,12 @@ def main(team_id, player_id):
                        }
     req_data = copy.deepcopy(req_data_common)
     bonus_data = copy.deepcopy(req_data_common)
-    url = parse.urljoin(REQUEST_URL, ADD_SCORE_END_POINT)
-    bonus_url = parse.urljoin(REQUEST_URL, CHECK_BONUS_END_POINT)
-    all_tags = json.load(open('/home/sanjeevk/streettag.json'))
+    url = urljoin(REQUEST_URL, ADD_SCORE_END_POINT)
+    bonus_url = urljoin(REQUEST_URL, CHECK_BONUS_END_POINT)
+    all_tags = json.load(open('streettag.json'))
     print("total = %s" % len(all_tags['data']['data']))
     count = 0
+    total_score = 0
     for tag in all_tags['data']['data'][0:215]:
 
         req_data["data"]["lat"] = tag["lat"]
@@ -40,6 +39,7 @@ def main(team_id, player_id):
         # print(req_data)
         r = requests.post(url, data=json.dumps(req_data))
         print(r.text)
+        total_score = total_score + int(tag["score"])
         bonus_data["data"]["circuit_id"] = tag["circuit_id"]
         bonus_data["data"]["current_time"] = time.strftime("%Y-%m-%d %H:%M:%S")
         bonus_data["data"]["location_id"] = tag["location_id"]
@@ -48,9 +48,10 @@ def main(team_id, player_id):
         #break
         time.sleep(10)
 
-        if count == 96:
-            print("you completed {} tags".format(count))
-            exit(0)
+        if count == 180:
+            print("you completed {} tags and {} score added".format(
+                count, total_score))
+            break
         count = count + 1
 
 
