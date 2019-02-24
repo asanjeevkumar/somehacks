@@ -2,7 +2,7 @@ import copy
 import json
 import time
 import requests
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 REQUEST_URL = 'http://35.177.113.43:80/'
 ADD_SCORE_END_POINT = '/services.php?action=capturescore_new'
@@ -11,6 +11,25 @@ API_KEY = "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R"
 
 PLAYER_LIST = [("563", "c2FuamVldmVrdW1hcmdtYWlsY29t")]
 # PLAYER_LIST.append(("504", "c3VzaG1hc2FuamVldg\u003d\u003d"))
+
+
+def yeild_tags():
+    get_tags_url = '/services.php?action=getallstreettags_new_jan'
+    req_url = urljoin(REQUEST_URL, get_tags_url)
+    post_data = {
+        "api_key": API_KEY,
+        "data": {
+            "circuit_id": "1",
+            "current_time": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "lat": "51.5366951",
+            "lng":  "0.0798844",
+            "location_id": "1",
+            "player_id": 'c2FuamVldmVrdW1hcmdtYWlsY29t'
+        }
+    }
+    r = requests.post(req_url, data=json.dumps(post_data))
+    print("total = %s" % len(r.json()['data']['data']))
+    return r.json()['data']['data']
 
 
 def main(team_id, player_id):
@@ -23,11 +42,11 @@ def main(team_id, player_id):
     bonus_data = copy.deepcopy(req_data_common)
     url = urljoin(REQUEST_URL, ADD_SCORE_END_POINT)
     bonus_url = urljoin(REQUEST_URL, CHECK_BONUS_END_POINT)
-    all_tags = json.load(open('streettag.json'))
-    print("total = %s" % len(all_tags['data']['data']))
+    # all_tags = json.load(open('streettag.json'))
+    # print("total = %s" % len(all_tags['data']['data']))
     count = 0
     total_score = 0
-    for tag in all_tags['data']['data'][0:215]:
+    for tag in yeild_tags():
 
         req_data["data"]["lat"] = tag["lat"]
         req_data["data"]["lng"] = tag["lng"]
