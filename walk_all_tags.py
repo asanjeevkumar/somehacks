@@ -9,8 +9,8 @@ ADD_SCORE_END_POINT = '/services.php?action=capturescore_new'
 CHECK_BONUS_END_POINT = '/services.php?action=checkforbonuspoints_5hours'
 API_KEY = "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R"
 
-PLAYER_LIST = [("563", "c2FuamVldmVrdW1hcmdtYWlsY29t")]
-# PLAYER_LIST.append(("504", "c3VzaG1hc2FuamVldg\u003d\u003d"))
+# PLAYER_LIST = [("563", "c2FuamVldmVrdW1hcmdtYWlsY29t")]
+PLAYER_LIST = [("550", "c3VzaG1hc2FuamVldg\u003d\u003d")]
 
 
 def yeild_tags():
@@ -46,7 +46,7 @@ def main(team_id, player_id):
     # print("total = %s" % len(all_tags['data']['data']))
     count = 0
     total_score = 0
-    for tag in yeild_tags():
+    for tag in yeild_tags()[:180]:
 
         req_data["data"]["lat"] = tag["lat"]
         req_data["data"]["lng"] = tag["lng"]
@@ -67,11 +67,8 @@ def main(team_id, player_id):
         #break
         time.sleep(10)
 
-        if count == 180:
-            print("you completed {} tags and {} score added".format(
-                count, total_score))
-            break
-        count = count + 1
+    print("you completed {} tags and {} score added".format(
+        count, total_score))
 
 
 if __name__ == '__main__':
