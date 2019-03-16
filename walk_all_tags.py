@@ -3,9 +3,10 @@ import json
 import time
 import requests
 from urllib.parse import urljoin
+import random
 
 REQUEST_URL = 'http://35.177.113.43:80/'
-ADD_SCORE_END_POINT = '/services.php?action=capturescore_new'
+ADD_SCORE_END_POINT = '/services.php?action=capturescore_checkbonus'
 CHECK_BONUS_END_POINT = '/services.php?action=checkforbonuspoints_5hours'
 API_KEY = "KhOSpc4cf67AkbRpq1hkq5O3LPlwU9IAtILaL27EPMlYr27zipbNCsQaeXkSeK3R"
 
@@ -59,14 +60,9 @@ def main(team_id, player_id):
         r = requests.post(url, data=json.dumps(req_data))
         print(r.text)
         total_score = total_score + int(tag["score"])
-        bonus_data["data"]["circuit_id"] = tag["circuit_id"]
-        bonus_data["data"]["current_time"] = time.strftime("%Y-%m-%d %H:%M:%S")
-        bonus_data["data"]["location_id"] = tag["location_id"]
-        r = requests.post(bonus_url, data=json.dumps(bonus_data))
-        print(r.text)
-        #break
-        time.sleep(10)
 
+        time.sleep(random.randint(40, 80))
+        count = count + 1
     print("you completed {} tags and {} score added".format(
         count, total_score))
 
