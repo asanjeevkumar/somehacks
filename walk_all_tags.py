@@ -60,8 +60,9 @@ def main(team_id, player_id):
         r = requests.post(url, data=json.dumps(req_data))
         print(r.text)
         total_score = total_score + int(tag["score"])
-
-        time.sleep(random.randint(40, 80))
+        sleep_tme = random.randint(40, 80)
+        print("walking time {} for tag {}".format(sleep_tme, count))
+        time.sleep(sleep_tme)
         count = count + 1
     print("you completed {} tags and {} score added".format(
         count, total_score))
